@@ -3094,6 +3094,7 @@ resource "aws_lambda_function" "lambda_ba_data" {
       JWT_SECRET = "T2BYL6#]zc>Byuzu"
     }
   }
+  code_signing_config_arn = "CKV_ANY"
 }
 
 
