@@ -23,7 +23,8 @@ resource "aws_vpc" "lab-vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name = "AWS_GOAT_VPC"
+    Name      = "AWS_GOAT_VPC"
+    yor_trace = "1cb76da0-41af-41bc-b036-6f42609da000"
   }
 }
 resource "aws_subnet" "lab-subnet-public-1" {
@@ -31,11 +32,15 @@ resource "aws_subnet" "lab-subnet-public-1" {
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
   availability_zone       = data.aws_availability_zones.available.names[0]
+  tags = {
+    yor_trace = "fe539ae7-fd7f-4112-9644-bfdf183b7154"
+  }
 }
 resource "aws_internet_gateway" "my_vpc_igw" {
   vpc_id = aws_vpc.lab-vpc.id
   tags = {
-    Name = "My VPC - Internet Gateway"
+    Name      = "My VPC - Internet Gateway"
+    yor_trace = "a40e0c88-3d9c-4444-a4e5-746cd8836fa3"
   }
 }
 resource "aws_route_table" "my_vpc_us_east_1_public_rt" {
@@ -46,7 +51,8 @@ resource "aws_route_table" "my_vpc_us_east_1_public_rt" {
   }
 
   tags = {
-    Name = "Public Subnet Route Table."
+    Name      = "Public Subnet Route Table."
+    yor_trace = "ed6674d3-8a3b-4574-b603-58f37d1a9cfb"
   }
 }
 
@@ -59,6 +65,9 @@ resource "aws_subnet" "lab-subnet-public-1b" {
   cidr_block              = "10.0.128.0/24"
   availability_zone       = data.aws_availability_zones.available.names[1]
   map_public_ip_on_launch = true
+  tags = {
+    yor_trace = "feb8ee99-9e36-4943-9d42-60f58adbb843"
+  }
 }
 resource "aws_route_table_association" "my_vpc_us_east_1b_public" {
   subnet_id      = aws_subnet.lab-subnet-public-1b.id
@@ -83,6 +92,9 @@ resource "aws_security_group" "ecs_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  tags = {
+    yor_trace = "1a04c6d1-daa3-405a-80a9-17d9aa8d874a"
+  }
 }
 
 # Create Database Subnet Group
@@ -93,7 +105,8 @@ resource "aws_db_subnet_group" "database-subnet-group" {
   description = "Subnets for Database Instance"
 
   tags = {
-    Name = "Database Subnets"
+    Name      = "Database Subnets"
+    yor_trace = "0895eb16-3dca-414e-96b6-f4f5e885d1e9"
   }
 }
 
@@ -121,7 +134,8 @@ resource "aws_security_group" "database-security-group" {
   }
 
   tags = {
-    Name = "rds-db-sg"
+    Name      = "rds-db-sg"
+    yor_trace = "6a237af7-543c-4dd8-8dd1-cb56dd2d2302"
   }
 
 }
@@ -141,6 +155,9 @@ resource "aws_db_instance" "database-instance" {
   availability_zone      = "us-east-1a"
   db_subnet_group_name   = aws_db_subnet_group.database-subnet-group.name
   vpc_security_group_ids = [aws_security_group.database-security-group.id]
+  tags = {
+    yor_trace = "24cacfff-85d2-4cb2-aec6-98623f1bbc70"
+  }
 }
 
 
@@ -164,7 +181,8 @@ resource "aws_security_group" "load_balancer_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "aws-goat-m2-sg"
+    Name      = "aws-goat-m2-sg"
+    yor_trace = "43e46c5f-d82a-4e0e-8b19-fe2c36d0a56e"
   }
 }
 
@@ -187,6 +205,9 @@ resource "aws_iam_role" "ecs-instance-role" {
       }
     ]
   })
+  tags = {
+    yor_trace = "4fe74ed9-cfd1-4dda-a762-c07b5610d9b9"
+  }
 }
 
 
@@ -222,6 +243,9 @@ resource "aws_iam_policy" "ecs_instance_policy" {
     ],
     "Version" : "2012-10-17"
   })
+  tags = {
+    yor_trace = "1d4cd99f-ed7e-4966-851f-ad579afeeeb8"
+  }
 }
 
 resource "aws_iam_policy" "instance_boundary_policy" {
@@ -250,12 +274,18 @@ resource "aws_iam_policy" "instance_boundary_policy" {
     ],
     "Version" : "2012-10-17"
   })
+  tags = {
+    yor_trace = "6ea410b7-ff7b-4dac-9daa-c2513cb93454"
+  }
 }
 
 resource "aws_iam_instance_profile" "ec2-deployer-profile" {
   name = "ec2Deployer"
   path = "/"
   role = aws_iam_role.ec2-deployer-role.id
+  tags = {
+    yor_trace = "4150b741-efff-4b2b-b10b-8d68f4672550"
+  }
 }
 resource "aws_iam_role" "ec2-deployer-role" {
   name = "ec2Deployer-role"
@@ -273,6 +303,9 @@ resource "aws_iam_role" "ec2-deployer-role" {
       }
     ]
   })
+  tags = {
+    yor_trace = "ba297db6-5e6a-411b-bc93-9a486fd087e8"
+  }
 }
 
 resource "aws_iam_policy" "ec2_deployer_admin_policy" {
@@ -290,6 +323,9 @@ resource "aws_iam_policy" "ec2_deployer_admin_policy" {
     ],
     "Version" : "2012-10-17"
   })
+  tags = {
+    yor_trace = "c603ee5d-2f89-4257-9591-0639c2d84119"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ec2-deployer-role-attachment" {
@@ -301,6 +337,9 @@ resource "aws_iam_instance_profile" "ecs-instance-profile" {
   name = "ecs-instance-profile"
   path = "/"
   role = aws_iam_role.ecs-instance-role.id
+  tags = {
+    yor_trace = "b0071cec-fb1c-4f0d-9765-388a56be51e6"
+  }
 }
 resource "aws_iam_role" "ecs-task-role" {
   name = "ecs-task-role"
@@ -319,6 +358,9 @@ resource "aws_iam_role" "ecs-task-role" {
     ]
     }
   )
+  tags = {
+    yor_trace = "fbf1fa13-bb05-4b1e-a0a3-15a7e70215a1"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ecs-task-role-attachment" {
@@ -358,6 +400,9 @@ resource "aws_launch_template" "ecs_launch_template" {
 
   vpc_security_group_ids = [aws_security_group.ecs_sg.id]
   user_data              = base64encode(data.template_file.user_data.rendered)
+  tags = {
+    yor_trace = "37b5c7f9-f33c-4536-a9b0-52e3557faf83"
+  }
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
@@ -378,7 +423,8 @@ resource "aws_ecs_cluster" "cluster" {
   name = "ecs-lab-cluster"
 
   tags = {
-    name = "ecs-cluster-name"
+    name      = "ecs-cluster-name"
+    yor_trace = "58bcff11-e42c-4247-8a11-18034d29d014"
   }
 }
 
@@ -404,6 +450,9 @@ resource "aws_ecs_task_definition" "task_definition" {
     name      = "kernels"
     host_path = "/usr/src/kernels"
   }
+  tags = {
+    yor_trace = "b38eb65e-b63b-42b7-985b-fdb3a3df090f"
+  }
 }
 
 data "template_file" "task_definition_json" {
@@ -428,6 +477,9 @@ resource "aws_ecs_service" "worker" {
     container_port   = 80
   }
   depends_on = [aws_lb_listener.listener]
+  tags = {
+    yor_trace = "b10c81c1-f7ea-499e-9352-69e10478c18b"
+  }
 }
 
 resource "aws_alb" "application_load_balancer" {
@@ -438,7 +490,8 @@ resource "aws_alb" "application_load_balancer" {
   security_groups    = [aws_security_group.load_balancer_security_group.id]
 
   tags = {
-    Name = "aws-goat-m2-alb"
+    Name      = "aws-goat-m2-alb"
+    yor_trace = "6658b22e-8a21-499b-85b8-7fbbab72a279"
   }
 }
 
@@ -450,7 +503,8 @@ resource "aws_lb_target_group" "target_group" {
   vpc_id      = aws_vpc.lab-vpc.id
 
   tags = {
-    Name = "aws-goat-m2-tg"
+    Name      = "aws-goat-m2-tg"
+    yor_trace = "bbbff612-67e8-46ec-8ebc-9971c268886a"
   }
 }
 
@@ -469,6 +523,9 @@ resource "aws_lb_listener" "listener" {
 resource "aws_secretsmanager_secret" "rds_creds" {
   name                    = "RDS_CREDS"
   recovery_window_in_days = 0
+  tags = {
+    yor_trace = "d43399ed-65b2-4399-aef9-49a12ce2352a"
+  }
 }
 
 resource "aws_secretsmanager_secret_version" "secret_version" {
@@ -519,6 +576,7 @@ resource "aws_s3_bucket" "bucket_tf_files" {
   tags = {
     Name        = "Do not delete Bucket"
     Environment = "Dev"
+    yor_trace   = "083bf7f5-cfbf-4dca-9154-fbf28e841c88"
   }
 }
 
