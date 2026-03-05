@@ -3618,6 +3618,9 @@ resource "aws_dynamodb_table" "users_table" {
     name = "email"
     type = "S"
   }
+  point_in_time_recovery {
+    enabled = true
+  }
 }
 resource "aws_dynamodb_table" "posts_table" {
   name           = "blog-posts"
